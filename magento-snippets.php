@@ -46,6 +46,9 @@ switch ($command) {
     case "changeIndexingMode":
         changeIndexingMode($argv[2]);
         break;
+    case "getAllVisibleSkus":
+        getAllVisibleSkus();
+        break;
     default:
         echo "Please enter a valid command\n";
 }
@@ -132,5 +135,16 @@ function changeIndexingMode($mode) {
             $process->setMode(Mage_Index_Model_Process::MODE_REAL_TIME)->save();
         }
         echo "\n";
+    }
+}
+
+function getAllVisibleSkus() {
+    $productModel = Mage::getModel('catalog/product')
+        ->getCollection()
+        ->addAttributeToSelect('sku')
+        ->addFieldToFilter('visibility', Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH);
+
+    foreach ($productModel as $product) {
+        echo $product->getSku() . "\n";
     }
 }
