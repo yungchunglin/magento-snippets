@@ -43,6 +43,9 @@ switch ($command) {
     case "getAttributeSets":
         getAttributeSets();
         break;
+    case "changeIndexingMode":
+        changeIndexingMode($argv[2]);
+        break;
     default:
         echo "Please enter a valid command\n";
 }
@@ -113,5 +116,21 @@ function getAttributeSets() {
     foreach ($attributeSetCollection as $attributeSet) {
         print_hr();
         print_r($attributeSet);
+    }
+}
+
+function changeIndexingMode($mode) {
+    $pCollection = Mage::getSingleton('index/indexer')->getProcessesCollection();
+    foreach ($pCollection as $process) {
+        echo "Setting " . $process->getIndexerCode() . " to ";
+        if ($mode == 'manual') {
+            echo "manual";
+            $process->setMode(Mage_Index_Model_Process::MODE_MANUAL)->save();
+        }
+        else {
+            echo "realtime";
+            $process->setMode(Mage_Index_Model_Process::MODE_REAL_TIME)->save();
+        }
+        echo "\n";
     }
 }
